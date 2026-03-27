@@ -63,18 +63,25 @@ pip install -r requirements.txt
 python run_experiment.py --n_samples 50
 ```
 
-### Full replication run (300 samples, both datasets)
+### Full replication run (300 samples, both datasets, ANN model)
 
 ```bash
 python run_experiment.py --dataset all --n_samples 300
 ```
 
-### Single dataset
+### LR model (matches paper Tables 2–5)
 
 ```bash
-python run_experiment.py --dataset adult --n_samples 300
-python run_experiment.py --dataset compas --n_samples 300
+python run_experiment.py --dataset adult --model lr --n_samples 300
 ```
+
+### Single dataset with ANN model
+
+```bash
+python run_experiment.py --dataset adult --model ann --n_samples 300
+python run_experiment.py --dataset compas --model ann --n_samples 300
+```
+
 
 ---
 
