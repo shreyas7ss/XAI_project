@@ -40,6 +40,21 @@ import openxai.experiment_utils as utils
 
 from src.config import RANDOM_SEED, set_seed
 
+# ─── Monkey-patch OpenXAI bug ────────────────────────────────────────────────
+# In openxai 0.1, convert_k_to_int fails to return the value if k is an int.
+def fixed_convert_k_to_int(k, n_feat):
+    if k == -1:
+        return n_feat
+    if isinstance(k, int):
+        return k
+    if isinstance(k, float):
+        if 0 < k < 1:
+            return int(np.ceil(k * n_feat))
+    return k  # Fallback
+
+utils.convert_k_to_int = fixed_convert_k_to_int
+# ─────────────────────────────────────────────────────────────────────────────
+
 
 # Top-k features to mask (as fraction of total features)
 TOP_K_FRACTION: float = 0.25
@@ -134,8 +149,9 @@ def compute_metrics_for_dataset(
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
                 result = eval_pred_faithfulness(
-                    attrs, X_test, model, k, perturb_method,
-                    feature_metadata, n_samples=100, invert=False, seed=RANDOM_SEED,
+                    explanations=attrs, inputs=X_test, model=model, k=k,
+                    perturb_method=perturb_method, feature_metadata=feature_metadata,
+                    n_samples=100, invert=False, seed=RANDOM_SEED,
                 )
             row["PGF"] = _safe_scalar(result, "PGF", exp_name)
         except Exception as exc:
@@ -147,8 +163,9 @@ def compute_metrics_for_dataset(
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
                 result = eval_pred_faithfulness(
-                    attrs, X_test, model, k, perturb_method,
-                    feature_metadata, n_samples=100, invert=True, seed=RANDOM_SEED,
+                    explanations=attrs, inputs=X_test, model=model, k=k,
+                    perturb_method=perturb_method, feature_metadata=feature_metadata,
+                    n_samples=100, invert=True, seed=RANDOM_SEED,
                 )
             row["PGU"] = _safe_scalar(result, "PGU", exp_name)
         except Exception as exc:
