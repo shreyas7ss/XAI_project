@@ -16,9 +16,9 @@ Our project implements the OpenXAI pipeline to evaluate post-hoc explainability 
 
 | Name | ID | Phase 1 & 2 Role | Phase 3 Role |
 | :--- | :--- | :--- | :--- |
-| **Alok Kumar** | 23BCS003 | Pipeline architecture, Metric integration | Noise Setup & Degradation Study |
+| **P B Shreyas** | 23BDS041 | Visualizations, Results analysis | Noise Setup & Degradation Study |
 | **Aditya Sahrawat** | 23BCS006 | Documentation, Experiment validation | SmoothSHAP / SmoothLIME & Before-After Analysis |
-| **P B Shreyas** | 23BDS041 | Visualizations, Results analysis | Visualization, Integration & Final Report |
+| **Alok Kumar** | 23BCS003 | Pipeline architecture, Metric integration | Visualization, Integration & Final Report |
 
 ---
 
@@ -162,11 +162,35 @@ Our extension study (detailed in `report/Phase3_Report.md`) investigates how exp
 ### Phase 3 Team Assignments
 | Member | Responsibility |
 | :--- | :--- |
-| **Alok Kumar** | Noise setup (`noise_utils.py`), Degradation study, Report Sections 1 & 2 |
+| **P B Shreyas** | Noise setup (`noise_utils.py`), Degradation study, Report Sections 1 & 2 |
 | **Aditya Sahrawat** | SmoothSHAP/SmoothLIME (`smooth_explainers.py`), Before-after analysis, Report Sections 3 & 4 |
-| **P B Shreyas** | All Phase 3 visualizations, pipeline integration (`run_phase3.py`), Report Sections 5 & 6 + final assembly |
+| **Alok Kumar** | All Phase 3 visualizations, pipeline integration (`run_phase3.py`), Report Sections 5 & 6 + final assembly |
 
 For a full breakdown of the replication data, see the files generated in the `results/` folder after running the experiments.
+
+---
+
+## 💡 Theoretical Motivation — SmoothSHAP & SmoothLIME
+
+Our Phase 3 extension introduces **SmoothSHAP** and **SmoothLIME** as noise-aware variants of the standard SHAP and LIME explainers.
+This approach is directly inspired by **SmoothGrad** (Smilkov et al., 2017), which demonstrated that averaging gradients over noise-perturbed inputs produces more stable saliency maps for image classifiers.
+We propose an analogous smoothing wrapper for tabular explainers:
+
+> *Inspired by SmoothGrad (Smilkov et al., 2017), which demonstrated that averaging gradients over
+> noise-perturbed inputs produces more stable saliency maps for image classifiers, we propose
+> SmoothSHAP and SmoothLIME — analogous smoothing wrappers for tabular explainers. Formally:*
+>
+> **SmoothExplainer(x) = (1/K) &Sigma; E(x + &epsilon;_k)**&nbsp;&nbsp; where &nbsp;&nbsp;**&epsilon;_k ~ N(0, &sigma;&sup2;I)**
+
+**SmoothGrad Citation:**
+```bibtex
+@article{smilkov2017smoothgrad,
+  title={SmoothGrad: removing noise by adding noise},
+  author={Smilkov, Daniel and Thorat, Nikhil and Kim, Been and Vi{\'e}gas, Fernanda and Wattenberg, Martin},
+  journal={arXiv preprint arXiv:1706.03825},
+  year={2017}
+}
+```
 
 ---
 
